@@ -30,13 +30,16 @@ const startupFunction = function(): void {
     })
   }
 
-  getMailboxes().then(function(): void) {
+  getMailboxes().then(function(): void {
     async function getContacts() {
       const contactsWorker: Contacts.Worker = new Contacts.Worker();
 
       const contacts: IContact[] = await contactsWorker.listContacts();
 
-      contacts.
+      contacts.forEach((inContact) => {
+        getState().addContactToList(inContact);
+      })
     }
-  }
+    getContacts().then(() => getState().showHidePleaseWait(false));
+  })
 }
