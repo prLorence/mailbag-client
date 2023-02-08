@@ -3,6 +3,13 @@ import "../css/main.css"
 
 import React from "react";
 import {createRoot, Root} from "react-dom/client";
+import BaseLayout from "./components/BaseLayout";
+import { getState } from "./state";
+
+import { Worker as IMAPWorker} from "./IMAP";
+import { Worker as ContactsWorker } from "./Contacts"
+import { IMailbox } from "./IMAP";
+import { IContact } from "./Contacts";
 
 const baseComponent: Root = createRoot(document.getElementById("mainContainer")!);
 baseComponent.render(<BaseLayout/>);
@@ -21,9 +28,9 @@ const startupFunction = function(): void {
   getState().showHidePleaseWait(true);
   
   async function getMailboxes(): Promise<any> {
-    const imapWorker: IMAP.Worker = new IMAP.Worker();
+    const imapWorker: IMAPWorker = new IMAPWorker();
 
-    const mailboxes: IMAP.IMailbox[] = await imapWorker.listMailboxes();
+    const mailboxes: IMailbox[] = await imapWorker.listMailboxes();
 
     mailboxes.forEach((inMailbox) => {
       getState().addMailboxToList(inMailbox);
@@ -32,7 +39,7 @@ const startupFunction = function(): void {
 
   getMailboxes().then(function(): void {
     async function getContacts() {
-      const contactsWorker: Contacts.Worker = new Contacts.Worker();
+      const contactsWorker: ContactsWorker = new ContactsWorker();
 
       const contacts: IContact[] = await contactsWorker.listContacts();
 

@@ -1,3 +1,3 @@
 export const config: { serverAddress: string, userEmail: string} = {
-  serverAddress: "http://localhost", userEmail: "name@domain.com"
+  serverAddress: "http://localhost:3001/", userEmail: "name@domain.com"
 }

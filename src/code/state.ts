@@ -1,48 +1,36 @@
+// noinspection TypeScriptValidateJSTypes
 // @ts-nocheck
 
 
-// React imports.
 import React from "react";
 
-// App imports.
 import * as Contacts from "./Contacts";
 import { config } from "./config";
 import * as IMAP from "./IMAP";
 import * as SMTP from "./SMTP";
 
 
-// The single instance of state.
 let stateSingleton: any = null;
 
 
-/**
- * This function must be called once and only once from BaseLayout.
- */
 export function createState(inParentComponent: React.Component): any {
 
   if (stateSingleton === null) {
 
     stateSingleton = {
 
-      // Flag: Is the "please wait" dialog visible?
       pleaseWaitVisible : false,
 
-      // List of contacts.
       contacts : [ ],
 
-      // List of mailboxes.
       mailboxes : [ ],
 
-      // List of messages in the current mailbox.
       messages : [ ],
 
-      // The view that is currently showing ("welcome", "message", "compose", "contact" or "contactAdd").
       currentView : "welcome",
 
-      // The currently selected mailbox, if any.
       currentMailbox : null,
 
-      // The details of the message currently being viewed or composed, if any.
       messageID : null,
       messageDate : null,
       messageFrom : null,
@@ -50,22 +38,11 @@ export function createState(inParentComponent: React.Component): any {
       messageSubject : null,
       messageBody : null,
 
-      // The details of the contact currently being viewed or added, if any.
       contactID : null,
       contactName : null,
       contactEmail : null,
 
 
-      // ------------------------------------------------------------------------------------------------
-      // ------------------------------------ View Switch functions -------------------------------------
-      // ------------------------------------------------------------------------------------------------
-
-
-      /**
-       * Shows or hides the "please wait" dialog during server calls.
-       *
-       * @param inVisible True to show the dialog, false to hide it.
-       */
       showHidePleaseWait : function(inVisible: boolean): void {
 
         this.setState(() => ({ pleaseWaitVisible : inVisible }));
@@ -73,13 +50,6 @@ export function createState(inParentComponent: React.Component): any {
       }.bind(inParentComponent), /* End showHidePleaseWait(). */
 
 
-      /**
-       * Show ContactView in view mode.
-       *
-       * @param inID    The ID of the contact to show.
-       * @param inName  The name of the contact to show.
-       * @param inEmail The Email address of the contact to show.
-       */
       showContact : function(inID: string, inName: string, inEmail: string): void {
 
         console.log("state.showContact()", inID, inName, inEmail);
@@ -91,9 +61,6 @@ export function createState(inParentComponent: React.Component): any {
       }.bind(inParentComponent), /* End showContact(). */
 
 
-      /**
-       * Show ContactView in add mode.
-       */
       showAddContact : function(): void {
 
         console.log("state.showAddContact()");
@@ -105,11 +72,6 @@ export function createState(inParentComponent: React.Component): any {
       }.bind(inParentComponent), /* End showAddContact(). */
 
 
-      /**
-       * Show MessageView in view mode.
-       *
-       * @param inMessage The message object that was clicked.
-       */
       showMessage : async function(inMessage: IMAP.IMessage): Promise<void> {
 
         console.log("state.showMessage()", inMessage);
@@ -129,12 +91,6 @@ export function createState(inParentComponent: React.Component): any {
       }.bind(inParentComponent), /* End showMessage(). */
 
 
-      /**
-       * Show MessageView in compose mode.
-       *
-       * @param inType Pass "new" if this is a new message, "reply" if it's a reply to the message currently being
-       *                    viewed, and "contact" if it's a message to the contact currently being viewed.
-       */
       showComposeMessage : function(inType: string): void {
 
         console.log("state.showComposeMessage()");
@@ -167,16 +123,6 @@ export function createState(inParentComponent: React.Component): any {
       }.bind(inParentComponent), /* End showComposeMessage(). */
 
 
-      // ------------------------------------------------------------------------------------------------
-      // ---------------------------------------- List functions ----------------------------------------
-      // ------------------------------------------------------------------------------------------------
-
-
-      /**
-       * Add a mailbox to the list of mailboxes.
-       *
-       * @param inMailbox A mailbox descriptor object.
-       */
       addMailboxToList : function(inMailbox: IMAP.IMailbox): void {
 
         console.log("state.addMailboxToList()", inMailbox);
@@ -186,11 +132,6 @@ export function createState(inParentComponent: React.Component): any {
       }.bind(inParentComponent), /* End addMailboxToList(). */
 
 
-      /**
-       * Add a contact to the list of contacts.
-       *
-       * @param inContact A contact descriptor object.
-       */
       addContactToList : function(inContact: Contacts.IContact): void {
 
         console.log("state.addContactToList()", inContact);
@@ -200,11 +141,6 @@ export function createState(inParentComponent: React.Component): any {
       }.bind(inParentComponent), /* End addContactToList(). */
 
 
-      /**
-       * Add a message to the list of messages in the current mailbox.
-       *
-       * @param inMessage A message descriptor object.
-       */
       addMessageToList : function(inMessage: IMAP.IMessage): void {
 
         console.log("state.addMessageToList()", inMessage);
@@ -214,9 +150,6 @@ export function createState(inParentComponent: React.Component): any {
       }.bind(inParentComponent), /* End addMessageToList(). */
 
 
-      /**
-       * Clear the list of messages currently displayed.
-       */
       clearMessages : function(): void {
 
         console.log("state.clearMessages()");
@@ -225,17 +158,6 @@ export function createState(inParentComponent: React.Component): any {
 
       }.bind(inParentComponent), /* End clearMessages(). */
 
-
-      // ------------------------------------------------------------------------------------------------
-      // ------------------------------------ Event Handler functions -----------------------------------
-      // ------------------------------------------------------------------------------------------------
-
-
-      /**
-       * Set the current mailbox.
-       *
-       * @param inPath The path of the current mailbox.
-       */
       setCurrentMailbox : function(inPath: String): void {
 
         console.log("state.setCurrentMailbox()", inPath);
@@ -249,13 +171,6 @@ export function createState(inParentComponent: React.Component): any {
       }.bind(inParentComponent), /* End setCurrentMailbox(). */
 
 
-      /**
-       * Get a list of messages in the currently selected mailbox, if any.
-       *
-       * @param inPath The path to the mailbox to get messages for.  Note that because this method is called when the
-       *               current mailbox is set, we can't count on state having been updated by the time this is called,
-       *               hence why the mailbox is passed in.  This avoids the problem with setState() being asynchronous.
-       */
       getMessages : async function(inPath: string): Promise<void> {
 
         console.log("state.getMessages()");
@@ -273,11 +188,6 @@ export function createState(inParentComponent: React.Component): any {
       }.bind(inParentComponent), /* End getMessages(). */
 
 
-      /**
-       * Fires any time the user types in an editable field.
-       *
-       * @param inEvent The event object generated by the keypress.
-       */
       fieldChangeHandler : function(inEvent: any): void {
 
         console.log("state.fieldChangeHandler()", inEvent.target.id, inEvent.target.value);
@@ -290,9 +200,6 @@ export function createState(inParentComponent: React.Component): any {
       }.bind(inParentComponent), /* End fieldChangeHandler(). */
 
 
-      /**
-       * Save contact.
-       */
       saveContact : async function(): Promise<void> {
 
         console.log("state.saveContact()", this.state.contactID, this.state.contactName, this.state.contactEmail);
@@ -316,9 +223,6 @@ export function createState(inParentComponent: React.Component): any {
       }.bind(inParentComponent), /* End saveContact(). */
 
 
-      /**
-       * Delete the currently viewed contact.
-       */
       deleteContact : async function(): Promise<void> {
 
         console.log("state.deleteContact()", this.state.contactID);
@@ -359,10 +263,6 @@ export function createState(inParentComponent: React.Component): any {
 
       }.bind(inParentComponent), /* End deleteMessage(). */
 
-
-      /**
-       * Delete a message (from the server and the contact list).
-       */
       sendMessage : async function(): Promise<void> {
 
         console.log("state.sendMessage()", this.state.messageTo, this.state.messageFrom, this.state.messageSubject,
@@ -388,14 +288,9 @@ export function createState(inParentComponent: React.Component): any {
 
   return stateSingleton;
 
-} /* End createState(). */
+} 
 
 
-/**
- * Return the single instance of state.  Needed by code that isn't a component in the BaseLayout hierarchy.
- *
- * @return The state object singleton instance.
- */
  export function getState(): any {
 
   return stateSingleton;

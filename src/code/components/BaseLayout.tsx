@@ -1,10 +1,14 @@
 import { Dialog, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 import React, { Component, useState } from 'react'
 import { createState } from '../state';
-import Toolbar from "./Toolbar.tsx";
-import MailboxList from "./MailboxList.tsx"
-import MessageList from "./MessageList.tsx"
+import Toolbar from "./Toolbar";
+import MailboxList from "./MailboxList"
+import MessageList from "./MessageList"
+import WelcomeView from './WelcomeView';
+import MessageView from './MessageView';
 import "../../css/main.css";
+import ContactView from './ContactView';
+import ContactList from './ContactList';
 
 
 class BaseLayout extends Component {
